@@ -1,7 +1,5 @@
 package com.tim.SampleWebApp.api;
 
-import java.util.List;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.tim.SampleWebApp.api.request.StudentApiRequest;
+import com.tim.SampleWebApp.api.response.FindAllStudentResponseObject;
 import com.tim.SampleWebApp.api.response.StudentResponseObject;
 import com.tim.SampleWebApp.common.CommonConstants;
 import com.tim.SampleWebApp.student.Student;
@@ -28,9 +27,10 @@ public class StudentApiController {
 	private StudentRepository studentRepository;
 
 	@GetMapping("/api/students")
-	public List<Student> findAll() {
+	public FindAllStudentResponseObject findAll() {
 		logger.info("\n----Returning all Students----\n");
-		return studentRepository.findAll();
+		return new FindAllStudentResponseObject().constructFromStudent(CommonConstants.FIND_ALL_STUDENT_API_RESPONSE,
+				HttpStatus.OK.toString(), CommonConstants.RESPONSE_MESSAGE_SUCCESS, studentRepository.findAll());
 	}
 
 	@GetMapping("/api/students/{id}")
@@ -41,7 +41,7 @@ public class StudentApiController {
 			return new StudentResponseObject().constructFromStudent(CommonConstants.FIND_STUDENT_API_RESPONSE,
 					HttpStatus.OK.toString(), CommonConstants.RESPONSE_MESSAGE_SUCCESS, student);
 		}
-		
+
 		return new StudentResponseObject().constructFromStudent(CommonConstants.FIND_STUDENT_API_RESPONSE,
 				HttpStatus.BAD_REQUEST.toString(), CommonConstants.RESPONSE_MESSAGE_FAILURE, null);
 	}
