@@ -16,7 +16,7 @@ import com.tim.SampleWebApp.api.response.FindAllStudentResponseObject;
 import com.tim.SampleWebApp.api.response.StudentResponseObject;
 import com.tim.SampleWebApp.common.CommonConstants;
 import com.tim.SampleWebApp.student.Student;
-import com.tim.SampleWebApp.student.StudentRepository;
+import com.tim.SampleWebApp.student.StudentService;
 
 @RestController
 public class StudentApiController {
@@ -24,19 +24,19 @@ public class StudentApiController {
 	private Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	@Autowired
-	private StudentRepository studentRepository;
+	private StudentService studentService;
 
 	@GetMapping("/api/students")
 	public FindAllStudentResponseObject findAll() {
-		logger.info("\n----Returning all Students----\n");
+		logger.info("----Returning all Students----");
 		return new FindAllStudentResponseObject().constructFromStudent(CommonConstants.FIND_ALL_STUDENT_API_RESPONSE,
-				HttpStatus.OK.toString(), CommonConstants.RESPONSE_MESSAGE_SUCCESS, studentRepository.findAll());
+				HttpStatus.OK.toString(), CommonConstants.RESPONSE_MESSAGE_SUCCESS, studentService.findAll());
 	}
 
 	@GetMapping("/api/students/{id}")
 	public StudentResponseObject findById(@PathVariable Long id) {
-		logger.info("\n---- Returning student with ID: {" + id + "} ----\n");
-		Student student = studentRepository.findById(id).orElse(null);
+		logger.info("---- Returning student with ID: {" + id + "} ----");
+		Student student = studentService.findById(id);
 		if (student != null) {
 			return new StudentResponseObject().constructFromStudent(CommonConstants.FIND_STUDENT_API_RESPONSE,
 					HttpStatus.OK.toString(), CommonConstants.RESPONSE_MESSAGE_SUCCESS, student);
@@ -48,7 +48,7 @@ public class StudentApiController {
 
 	@PostMapping("/api/students/create")
 	public StudentResponseObject saveStudent(@RequestBody StudentApiRequest request) {
-		logger.info("\n----Creating New Student----\n");
+		logger.info("----Creating New Student----");
 		logger.info("Request Body: " + request.toString());
 		Student newStudent = new Student();
 		newStudent.setAddress(request.getAddress());
@@ -57,7 +57,7 @@ public class StudentApiController {
 		newStudent.setPhoneNumber(request.getPhoneNumber());
 		newStudent.setStudentType(request.getStudentType());
 
-		newStudent = studentRepository.save(newStudent);
+		newStudent = studentService.save(newStudent);
 
 		return new StudentResponseObject().constructFromStudent(CommonConstants.CREATE_STUDENT_API_RESPONSE,
 				HttpStatus.OK.toString(), CommonConstants.RESPONSE_MESSAGE_SUCCESS, newStudent);
@@ -65,16 +65,16 @@ public class StudentApiController {
 
 	@PostMapping("/api/students/update/{id}")
 	public StudentResponseObject updateStudent(@RequestBody StudentApiRequest request, @PathVariable Long id) {
-		logger.info("\n---- Updating Student with ID: {" + id + "} ----\n");
+		logger.info("---- Updating Student with ID: {" + id + "} ----");
 
-		Student student = studentRepository.findById(id).orElse(null);
+		Student student = studentService.findById(id);
 		if (student != null) {
 			student.setAddress(request.getAddress());
 			student.setName(request.getName());
 			student.setEmail(request.getEmail());
 			student.setPhoneNumber(request.getPhoneNumber());
 			student.setStudentType(request.getStudentType());
-			student = studentRepository.save(student);
+			student = studentService.save(student);
 			return new StudentResponseObject().constructFromStudent(CommonConstants.UPDATE_STUDENT_API_RESPONSE,
 					HttpStatus.OK.toString(), CommonConstants.RESPONSE_MESSAGE_SUCCESS, student);
 		}
@@ -85,8 +85,8 @@ public class StudentApiController {
 
 	@DeleteMapping("/api/students/delete/{id}")
 	public StudentResponseObject deleteStudent(@PathVariable Long id) {
-		logger.info("\n---- Deleting Student with ID: {" + id + "} ----\n");
-		studentRepository.deleteById(id);
+		logger.info("---- Deleting Student with ID: {" + id + "} ----");
+		studentService.deleteById(id);
 
 		return new StudentResponseObject().constructFromStudent(CommonConstants.DELETE_STUDENT_API_RESPONSE,
 				HttpStatus.OK.toString(), CommonConstants.RESPONSE_MESSAGE_SUCCESS, null);
