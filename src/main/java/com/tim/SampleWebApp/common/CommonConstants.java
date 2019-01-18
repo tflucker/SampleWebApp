@@ -11,4 +11,43 @@ public class CommonConstants {
 	public static final String RESPONSE_MESSAGE_SUCCESS = "SUCCESS";
 	public static final String RESPONSE_MESSAGE_FAILURE = "FAILURE";
 
+	public enum ApiMessages {
+
+		ID_NOT_FOUND("ERROR", 1001, "ID not found.");
+
+		private String type;
+		private int code;
+		private String description;
+
+		ApiMessages(String type, int code, String description) {
+			this.type = type;
+			this.code = code;
+			this.description = description;
+		}
+
+		public String getType() {
+			return type;
+		}
+
+		public void setType(String type) {
+			this.type = type;
+		}
+
+		public int getCode() {
+			return code;
+		}
+
+		public void setCode(int code) {
+			this.code = code;
+		}
+
+		public String getDescription() {
+			return description;
+		}
+
+		public void setDescription(String description) {
+			this.description = description;
+		}
+
+	}
 }

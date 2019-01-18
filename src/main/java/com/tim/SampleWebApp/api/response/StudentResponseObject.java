@@ -1,8 +1,11 @@
 package com.tim.SampleWebApp.api.response;
 
+import java.util.List;
+
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.tim.SampleWebApp.error.Message;
 import com.tim.SampleWebApp.student.Student;
 
 @JsonInclude(Include.NON_EMPTY)
@@ -20,12 +23,15 @@ public class StudentResponseObject {
 	@JsonProperty
 	private Student studentInfo;
 
+	@JsonProperty
+	private List<Message> messageList;
+
 	public StudentResponseObject() {
 
 	}
 
 	public StudentResponseObject constructFromStudent(String apiResponse, String responseCode, String responseMessage,
-			Student student) {
+			Student student, List<Message> messageList) {
 		StudentResponseObject response = new StudentResponseObject();
 		response.setApiResponse(apiResponse);
 
@@ -34,6 +40,7 @@ public class StudentResponseObject {
 		}
 		response.setResponseCode(responseCode);
 		response.setResponseMessage(responseMessage);
+		response.setMessageList(messageList);
 
 		return response;
 	}
@@ -68,6 +75,14 @@ public class StudentResponseObject {
 
 	public void setStudentInfo(Student studentInfo) {
 		this.studentInfo = studentInfo;
+	}
+
+	public List<Message> getMessageList() {
+		return messageList;
+	}
+
+	public void setMessageList(List<Message> messageList) {
+		this.messageList = messageList;
 	}
 
 }

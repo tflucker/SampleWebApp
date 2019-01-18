@@ -1,8 +1,12 @@
 package com.tim.SampleWebApp.api;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,6 +19,7 @@ import com.tim.SampleWebApp.api.request.StudentApiRequest;
 import com.tim.SampleWebApp.api.response.FindAllStudentResponseObject;
 import com.tim.SampleWebApp.api.response.StudentResponseObject;
 import com.tim.SampleWebApp.common.CommonConstants;
+import com.tim.SampleWebApp.error.Message;
 import com.tim.SampleWebApp.student.Student;
 import com.tim.SampleWebApp.student.StudentService;
 
@@ -39,11 +44,12 @@ public class StudentApiController {
 		Student student = studentService.findById(id);
 		if (student != null) {
 			return new StudentResponseObject().constructFromStudent(CommonConstants.FIND_STUDENT_API_RESPONSE,
-					HttpStatus.OK.toString(), CommonConstants.RESPONSE_MESSAGE_SUCCESS, student);
+					HttpStatus.OK.toString(), CommonConstants.RESPONSE_MESSAGE_SUCCESS, student, null);
 		}
-
+		List<Message> messageList = new ArrayList<>();
+		messageList.add(new Message().constructFromEnum(CommonConstants.ApiMessages.ID_NOT_FOUND));
 		return new StudentResponseObject().constructFromStudent(CommonConstants.FIND_STUDENT_API_RESPONSE,
-				HttpStatus.BAD_REQUEST.toString(), CommonConstants.RESPONSE_MESSAGE_FAILURE, null);
+				HttpStatus.BAD_REQUEST.toString(), CommonConstants.RESPONSE_MESSAGE_FAILURE, null, messageList);
 	}
 
 	@PostMapping("/api/students/create")
@@ -60,7 +66,7 @@ public class StudentApiController {
 		newStudent = studentService.save(newStudent);
 
 		return new StudentResponseObject().constructFromStudent(CommonConstants.CREATE_STUDENT_API_RESPONSE,
-				HttpStatus.OK.toString(), CommonConstants.RESPONSE_MESSAGE_SUCCESS, newStudent);
+				HttpStatus.OK.toString(), CommonConstants.RESPONSE_MESSAGE_SUCCESS, newStudent, null);
 	}
 
 	@PostMapping("/api/students/update/{id}")
@@ -76,20 +82,27 @@ public class StudentApiController {
 			student.setStudentType(request.getStudentType());
 			student = studentService.save(student);
 			return new StudentResponseObject().constructFromStudent(CommonConstants.UPDATE_STUDENT_API_RESPONSE,
-					HttpStatus.OK.toString(), CommonConstants.RESPONSE_MESSAGE_SUCCESS, student);
+					HttpStatus.OK.toString(), CommonConstants.RESPONSE_MESSAGE_SUCCESS, student, null);
 		}
-
+		List<Message> messageList = new ArrayList<>();
+		messageList.add(new Message().constructFromEnum(CommonConstants.ApiMessages.ID_NOT_FOUND));
 		return new StudentResponseObject().constructFromStudent(CommonConstants.UPDATE_STUDENT_API_RESPONSE,
-				HttpStatus.BAD_REQUEST.toString(), CommonConstants.RESPONSE_MESSAGE_FAILURE, null);
+				HttpStatus.BAD_REQUEST.toString(), CommonConstants.RESPONSE_MESSAGE_FAILURE, null, messageList);
 	}
 
 	@DeleteMapping("/api/students/delete/{id}")
 	public StudentResponseObject deleteStudent(@PathVariable Long id) {
 		logger.info("---- Deleting Student with ID: {" + id + "} ----");
-		studentService.deleteById(id);
-
+		try {
+			studentService.deleteById(id);
+		} catch (EmptyResultDataAccessException e) {
+			List<Message> messageList = new ArrayList<>();
+			messageList.add(new Message().constructFromEnum(CommonConstants.ApiMessages.ID_NOT_FOUND));
+			return new StudentResponseObject().constructFromStudent(CommonConstants.DELETE_STUDENT_API_RESPONSE,
+					HttpStatus.OK.toString(), CommonConstants.RESPONSE_MESSAGE_SUCCESS, null, messageList);
+		}
 		return new StudentResponseObject().constructFromStudent(CommonConstants.DELETE_STUDENT_API_RESPONSE,
-				HttpStatus.OK.toString(), CommonConstants.RESPONSE_MESSAGE_SUCCESS, null);
+				HttpStatus.OK.toString(), CommonConstants.RESPONSE_MESSAGE_SUCCESS, null, null);
 	}
 
 }
