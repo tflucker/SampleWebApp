@@ -10,15 +10,20 @@ This is a Spring Boot application with an embedded H2 database and several REST 
 
 
 
-## Future Functionality 
+## Future Functionality : APIs
 
-- Update Student findAll API to follow same response object return type as other Student APIs
 - Create "Course" APIs (find all, find by id, create, update, delete)
 - Create link between Student and Course objects 
   - update Student Object to contain list of courses (completed v. currently enrolled)
   - update student API response objects to return list of courses
   - When deleting students, delete links to any courses
   - When deleting courses, delete from each student list
+- Add request validation for APIs
+  - create / update validate all request body params
+    - use Hibernate validation???
+  - findById + delete - validate numeric id parameter
+  
+### Future Functionality : Webapp  
 - Create Login page to Univeristy Portal
   - Create STUDENT profile
   - Create ADMIN profile
