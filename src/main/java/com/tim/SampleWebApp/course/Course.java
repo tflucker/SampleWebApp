@@ -1,13 +1,12 @@
 package com.tim.SampleWebApp.course;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
-
-import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
 @Table(name = "COURSE")
@@ -18,16 +17,22 @@ public class Course {
 	@GeneratedValue(strategy = GenerationType.TABLE, generator = "course_seq")
 	private long id;
 
+	@Column
 	private String courseName;
 
+	@Column
 	private int minSize;
 
+	@Column
 	private int maxSize;
 
+	@Column
 	private String courseDescription;
 
+	@Column
 	private String teacherName;
 
+	@Column
 	private String courseType;
 
 	public Course() {
