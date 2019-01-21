@@ -1,5 +1,13 @@
 package com.tim.SampleWebApp.api.validators.course;
 
-public class CourseMaxSizeValidator {
+import com.tim.SampleWebApp.api.validators.Validator;
+import com.tim.SampleWebApp.error.Message;
 
+public class CourseMaxSizeValidator implements Validator<Object, Message> {
+
+	@Override
+	public Message validate(Object toValidate) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }
