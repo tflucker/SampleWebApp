@@ -13,8 +13,11 @@ CREATE TABLE student(
 	student_type VARCHAR(20)
 );
 
+
+CREATE SEQUENCE COURSE_SEQ start with 1 increment by 1 ;
+
 CREATE TABLE course(
-	id INTEGER NOT NULL AUTO_INCREMENT,
+	id BIGINT DEFAULT nextval('course_seq'),
 	course_name VARCHAR(200),
 	min_size INTEGER,
 	max_size INTEGER,

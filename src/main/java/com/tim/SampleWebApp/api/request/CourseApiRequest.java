@@ -1,57 +1,42 @@
-package com.tim.SampleWebApp.course;
+package com.tim.SampleWebApp.api.request;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.SequenceGenerator;
-import javax.persistence.Table;
-
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-@Entity
-@Table(name = "COURSE")
-@SequenceGenerator(sequenceName = "course_seq", name = "course_seq", allocationSize = 1)
-public class Course {
+@JsonInclude(Include.NON_EMPTY)
+public class CourseApiRequest {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.TABLE, generator = "course_seq")
-	private long id;
-
+	@JsonProperty
 	private String courseName;
 
+	@JsonProperty
 	private int minSize;
 
+	@JsonProperty
 	private int maxSize;
 
+	@JsonProperty
 	private String courseDescription;
 
+	@JsonProperty
 	private String teacherName;
 
+	@JsonProperty
 	private String courseType;
 
-	public Course() {
-		super();
+	public CourseApiRequest() {
 	}
 
-	public Course(long id, String courseName, int minSize, int maxSize, String courseDescription, String teacherName,
+	public CourseApiRequest(String courseName, int minSize, int maxSize, String courseDescription, String teacherName,
 			String courseType) {
 		super();
-		this.id = id;
 		this.courseName = courseName;
 		this.minSize = minSize;
 		this.maxSize = maxSize;
 		this.courseDescription = courseDescription;
 		this.teacherName = teacherName;
 		this.courseType = courseType;
-	}
-
-	public long getId() {
-		return id;
-	}
-
-	public void setId(long id) {
-		this.id = id;
 	}
 
 	public String getCourseName() {
