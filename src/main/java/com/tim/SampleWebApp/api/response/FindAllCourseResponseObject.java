@@ -8,7 +8,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.tim.SampleWebApp.course.Course;
 
 @JsonInclude(Include.NON_EMPTY)
-public class FindAllCourseResponseObject extends GenericResponseObject{
+public class FindAllCourseResponseObject {
 
 	@JsonProperty
 	private String apiResponse;
