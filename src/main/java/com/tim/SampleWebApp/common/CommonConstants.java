@@ -1,5 +1,7 @@
 package com.tim.SampleWebApp.common;
 
+import org.apache.commons.lang3.StringUtils;
+
 public class CommonConstants {
 
 	public static final String FIND_ALL_STUDENT_API_RESPONSE = "FindAllStudentApiResponse";
@@ -9,11 +11,35 @@ public class CommonConstants {
 	public static final String DELETE_STUDENT_API_RESPONSE = "DeleteStudentApiResponse";
 
 	public static final String RESPONSE_MESSAGE_SUCCESS = "SUCCESS";
+	public static final String RESPONSE_MESSAGE_SUCCESS_WITH_WARNING = "SUCCESS WITH WARNINGS";
 	public static final String RESPONSE_MESSAGE_FAILURE = "FAILURE";
+
+	public static final String ERROR = "ERROR";
+	public static final String WARNING = "WARNING";
+
+	public enum StudentType {
+		UNDERGRAD, GRADUATE, PHD;
+
+		public static boolean contains(String s) {
+			if (!StringUtils.isBlank(s)) {
+				for (StudentType type : StudentType.values()) {
+					if (StringUtils.equalsIgnoreCase(type.toString(), s)) {
+						return true;
+					}
+				}
+			}
+			return false;
+		}
+	}
 
 	public enum ApiMessages {
 
-		ID_NOT_FOUND("ERROR", 1001, "ID not found.");
+		ID_NOT_FOUND(ERROR, 1001, "ID not found."),
+		NULL_FIELD_VALUE(ERROR, 1002, "No value provide for required field: "),
+		INVALID_VALUE(ERROR, 1003, "Invalid value for field: "),
+		NUMERIC_ONLY(ERROR, 1004, "Only numeric values allowed for field: "),
+		ALPHANUMERIC_ONLY(ERROR, 1005, "Only alphanumeric values allowed for field: "),
+		FIELD_LENGTH_TOO_LONG(WARNING, 1006, "Value too long for field: ");
 
 		private String type;
 		private int code;
