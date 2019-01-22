@@ -1,4 +1,4 @@
-package com.tim.SampleWebApp.api.validators.base;
+package com.tim.SampleWebApp.api.validators;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;

@@ -1,4 +1,4 @@
-package com.tim.SampleWebApp.api.validators.base;
+package com.tim.SampleWebApp.api.validators;
 
 public interface Validator<I, O> {
 

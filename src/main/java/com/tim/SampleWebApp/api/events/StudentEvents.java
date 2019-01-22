@@ -3,7 +3,6 @@ package com.tim.SampleWebApp.api.events;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +20,7 @@ import com.tim.SampleWebApp.student.StudentService;
 
 public class StudentEvents extends AbstractApiEvents {
 
-	private Logger logger = LoggerFactory.getLogger(this.getClass());
+	private static Logger logger = LoggerFactory.getLogger(StudentEvents.class);
 
 	@Autowired
 	private StudentService studentService;
@@ -37,15 +36,16 @@ public class StudentEvents extends AbstractApiEvents {
 	}
 
 	public StudentResponseObject findById(Long id) {
+		StudentResponseObject response = new StudentResponseObject();
 		Student student = studentService.findById(id);
 		if (student != null) {
-			logger.info("Request Success!");
-			return generateSuccessResponse(CommonConstants.FIND_STUDENT_API_RESPONSE, student);
+			response = generateSuccessResponse(CommonConstants.FIND_STUDENT_API_RESPONSE, student);
+		} else {
+			List<Message> messageList = new ArrayList<>();
+			messageList.add(new Message().constructFromEnum(CommonConstants.ApiMessages.ID_NOT_FOUND));
+			response = generateErrorResponse(CommonConstants.FIND_STUDENT_API_RESPONSE, messageList);
 		}
-		List<Message> messageList = new ArrayList<>();
-		messageList.add(new Message().constructFromEnum(CommonConstants.ApiMessages.ID_NOT_FOUND));
-		logger.info("Bad Request!");
-		return generateErrorResponse(CommonConstants.FIND_STUDENT_API_RESPONSE, messageList);
+		return response;
 	}
 
 	public StudentResponseObject saveNewStudent(StudentApiRequest request) {
@@ -59,7 +59,6 @@ public class StudentEvents extends AbstractApiEvents {
 			newStudent.setPhoneNumber(request.getPhoneNumber());
 			newStudent.setStudentType(request.getStudentType());
 
-			logger.info("Request Success!");
 			response = generateSuccessResponse(CommonConstants.CREATE_STUDENT_API_RESPONSE, newStudent);
 		} else if (!msgList.isEmpty() && !containsErrors(msgList)) {
 			newStudent.setAddress(request.getAddress());
@@ -68,11 +67,9 @@ public class StudentEvents extends AbstractApiEvents {
 			newStudent.setPhoneNumber(request.getPhoneNumber());
 			newStudent.setStudentType(request.getStudentType());
 
-			logger.info("Request Success with Warnings!");
 			response = generateSuccessWithWarningResponse(CommonConstants.CREATE_STUDENT_API_RESPONSE, newStudent,
 					msgList);
 		} else {
-			logger.info("Bad Request!");
 			return generateErrorResponse(CommonConstants.CREATE_STUDENT_API_RESPONSE, msgList);
 		}
 
@@ -95,7 +92,6 @@ public class StudentEvents extends AbstractApiEvents {
 				student.setPhoneNumber(request.getPhoneNumber());
 				student.setStudentType(request.getStudentType());
 
-				logger.info("Request Success!");
 				response = generateSuccessResponse(CommonConstants.UPDATE_STUDENT_API_RESPONSE, student);
 			} else if (!msgList.isEmpty() && !containsErrors(msgList)) {
 				student.setAddress(request.getAddress());
@@ -104,7 +100,6 @@ public class StudentEvents extends AbstractApiEvents {
 				student.setPhoneNumber(request.getPhoneNumber());
 				student.setStudentType(request.getStudentType());
 
-				logger.info("Request Success with Warnings!");
 				response = generateSuccessWithWarningResponse(CommonConstants.UPDATE_STUDENT_API_RESPONSE, student,
 						msgList);
 			} else {
@@ -115,25 +110,24 @@ public class StudentEvents extends AbstractApiEvents {
 			return response;
 
 		} else {
-			logger.info("Bad Request!");
 			msgList.add(new Message().constructFromEnum(CommonConstants.ApiMessages.ID_NOT_FOUND));
 			return generateErrorResponse(CommonConstants.UPDATE_STUDENT_API_RESPONSE, msgList);
 		}
 	}
 
 	public StudentResponseObject deleteStudent(Long id) {
+		StudentResponseObject response = new StudentResponseObject();
 		List<Message> msgList = new ArrayList<>();
 
 		try {
 			studentService.deleteById(id);
+			response = generateSuccessResponse(CommonConstants.DELETE_STUDENT_API_RESPONSE, null);
 		} catch (EmptyResultDataAccessException | IllegalArgumentException e) {
 			msgList.add(new Message().constructFromEnum(CommonConstants.ApiMessages.ID_NOT_FOUND));
-			logger.info("Bad Request!");
-			return generateErrorResponse(CommonConstants.DELETE_STUDENT_API_RESPONSE, msgList);
+			response = generateErrorResponse(CommonConstants.DELETE_STUDENT_API_RESPONSE, msgList);
 		}
 
-		logger.info("Request Success!");
-		return generateSuccessResponse(CommonConstants.DELETE_STUDENT_API_RESPONSE, null);
+		return response;
 	}
 
 	public List<Message> validateRequest(StudentApiRequest request) {
@@ -143,12 +137,45 @@ public class StudentEvents extends AbstractApiEvents {
 		return msgList;
 	}
 
-	public boolean containsErrors(List<Message> msgList) {
-		long errorCount = msgList.stream()
-				.filter(msg -> StringUtils.equalsIgnoreCase(msg.getType(), CommonConstants.ERROR)).count();
-		if (errorCount == 0L) {
-			return false;
-		}
-		return true;
+	public static StudentResponseObject generateSuccessResponse(String apiName, Student student) {
+		logger.info("Request Succeeded, generating response...");
+
+		StudentResponseObject response = new StudentResponseObject();
+
+		response.setApiResponse(apiName);
+		response.setResponseCode(HttpStatus.OK.toString());
+		response.setResponseMessage(CommonConstants.RESPONSE_MESSAGE_SUCCESS);
+		response.setStudentInfo(student);
+
+		return response;
 	}
+
+	public static StudentResponseObject generateSuccessWithWarningResponse(String apiName, Student student,
+			List<Message> messageList) {
+		logger.info("Request Succeeded with warnings, generating response...");
+		StudentResponseObject response = new StudentResponseObject();
+
+		response.setApiResponse(apiName);
+		response.setResponseCode(HttpStatus.OK.toString());
+		response.setResponseMessage(CommonConstants.RESPONSE_MESSAGE_SUCCESS_WITH_WARNING);
+
+		response.setStudentInfo(student);
+		response.setMessageList(messageList);
+		return response;
+	}
+
+	public static StudentResponseObject generateErrorResponse(String apiName, List<Message> messageList) {
+		logger.info("Request failed, generating error response...");
+
+		StudentResponseObject response = new StudentResponseObject();
+
+		response.setApiResponse(apiName);
+		response.setResponseCode(HttpStatus.BAD_REQUEST.toString());
+		response.setResponseMessage(CommonConstants.RESPONSE_MESSAGE_FAILURE);
+
+		response.setMessageList(messageList);
+
+		return response;
+	}
+
 }

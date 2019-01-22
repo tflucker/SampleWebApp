@@ -7,6 +7,8 @@ import java.util.Map;
 import org.springframework.stereotype.Component;
 
 import com.tim.SampleWebApp.api.request.StudentApiRequest;
+import com.tim.SampleWebApp.api.validators.Validator;
+import com.tim.SampleWebApp.api.validators.ValidatorImpl;
 import com.tim.SampleWebApp.api.validators.student.StudentAddressValidator;
 import com.tim.SampleWebApp.api.validators.student.StudentEmailValidator;
 import com.tim.SampleWebApp.api.validators.student.StudentNameValidator;

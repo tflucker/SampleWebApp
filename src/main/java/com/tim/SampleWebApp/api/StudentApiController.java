@@ -44,6 +44,7 @@ public class StudentApiController extends StudentEvents {
 	@PostMapping("/api/students/update/{id}")
 	public StudentResponseObject update(@RequestBody StudentApiRequest request, @PathVariable Long id) {
 		logger.info("---- Updating Student with ID: {" + id + "} ----");
+		logger.info("Request Body: " + request.toString());
 		StudentResponseObject response = updateExistingStudent(request, id);
 		return response;
 	}

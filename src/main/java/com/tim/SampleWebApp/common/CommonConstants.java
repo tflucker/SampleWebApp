@@ -10,6 +10,12 @@ public class CommonConstants {
 	public static final String UPDATE_STUDENT_API_RESPONSE = "UpdateStudentApiResponse";
 	public static final String DELETE_STUDENT_API_RESPONSE = "DeleteStudentApiResponse";
 
+	public static final String FIND_ALL_COURSE_API_RESPONSE = "FindAllCoursesApiResponse";
+	public static final String FIND_COURSE_API_RESPONSE = "FindCourseApiResponse";
+	public static final String CREATE_COURSE_API_RESPONSE = "CreateCourseApiResponse";
+	public static final String UPDATE_COURSE_API_RESPONSE = "UpdateCourseApiResponse";
+	public static final String DELETE_COURSE_API_RESPONSE = "DeleteCourseApiResponse";
+
 	public static final String RESPONSE_MESSAGE_SUCCESS = "SUCCESS";
 	public static final String RESPONSE_MESSAGE_SUCCESS_WITH_WARNING = "SUCCESS WITH WARNINGS";
 	public static final String RESPONSE_MESSAGE_FAILURE = "FAILURE";
@@ -32,6 +38,23 @@ public class CommonConstants {
 		}
 	}
 
+	public enum CourseType {
+
+		CLASSROOM, WEB_CLASS, SEMINAR;
+
+		public static boolean contains(String s) {
+			if (!StringUtils.isBlank(s)) {
+				for (CourseType type : CourseType.values()) {
+					if (StringUtils.equalsIgnoreCase(type.toString(), s)) {
+						return true;
+					}
+				}
+			}
+			return false;
+		}
+
+	}
+
 	public enum ApiMessages {
 
 		ID_NOT_FOUND(ERROR, 1001, "ID not found."),
@@ -39,7 +62,9 @@ public class CommonConstants {
 		INVALID_VALUE(ERROR, 1003, "Invalid value for field: "),
 		NUMERIC_ONLY(ERROR, 1004, "Only numeric values allowed for field: "),
 		ALPHANUMERIC_ONLY(ERROR, 1005, "Only alphanumeric values allowed for field: "),
-		FIELD_LENGTH_TOO_LONG(WARNING, 1006, "Value too long for field: ");
+		FIELD_LENGTH_TOO_LONG(WARNING, 1006, "Value too long for field: "),
+
+		INVALID_REQUEST(ERROR, 4000, "Invalid Request body format.");
 
 		private String type;
 		private int code;

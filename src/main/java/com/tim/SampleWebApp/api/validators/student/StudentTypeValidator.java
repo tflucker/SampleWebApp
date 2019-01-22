@@ -2,7 +2,7 @@ package com.tim.SampleWebApp.api.validators.student;
 
 import org.apache.commons.lang3.StringUtils;
 
-import com.tim.SampleWebApp.api.validators.base.Validator;
+import com.tim.SampleWebApp.api.validators.Validator;
 import com.tim.SampleWebApp.common.CommonConstants;
 import com.tim.SampleWebApp.common.CommonConstants.ApiMessages;
 import com.tim.SampleWebApp.error.Message;
