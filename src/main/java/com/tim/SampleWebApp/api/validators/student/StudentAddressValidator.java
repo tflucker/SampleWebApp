@@ -13,16 +13,15 @@ public class StudentAddressValidator implements Validator<Object, Message> {
 
 	@Override
 	public Message validate(Object toValidate) {
-		Message m = new Message();
 		String str = (String) toValidate;
 		if (StringUtils.isBlank(str)) {
-			return m.constructFromEnumForField(ApiMessages.NULL_FIELD_VALUE, fieldName);
+			return Message.isRequired(fieldName);
 		}
 		if (str.length() > fieldLength) {
-			m = m.constructFromEnumForField(ApiMessages.FIELD_LENGTH_TOO_LONG, fieldName);
+			return Message.fieldValueTooLong(fieldName, fieldLength);
 		}
 
-		return m;
+		return null;
 
 	}
 

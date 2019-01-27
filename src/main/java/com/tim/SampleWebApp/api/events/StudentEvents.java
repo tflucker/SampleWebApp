@@ -42,38 +42,28 @@ public class StudentEvents extends AbstractApiEvents {
 			response = generateSuccessResponse(CommonConstants.FIND_STUDENT_API_RESPONSE, student);
 		} else {
 			List<Message> messageList = new ArrayList<>();
-			messageList.add(new Message().constructFromEnum(CommonConstants.ApiMessages.ID_NOT_FOUND));
+			messageList.add(Message.constructFromEnum(CommonConstants.ApiMessages.ID_NOT_FOUND));
 			response = generateErrorResponse(CommonConstants.FIND_STUDENT_API_RESPONSE, messageList);
 		}
 		return response;
 	}
 
 	public StudentResponseObject saveNewStudent(StudentApiRequest request) {
-		Student newStudent = new Student();
+		Student student = new Student();
 		StudentResponseObject response = new StudentResponseObject();
 		List<Message> msgList = validateRequest(request);
 		if (msgList.isEmpty() || msgList == null) {
-			newStudent.setAddress(request.getAddress());
-			newStudent.setEmail(request.getEmail());
-			newStudent.setName(request.getName());
-			newStudent.setPhoneNumber(request.getPhoneNumber());
-			newStudent.setStudentType(request.getStudentType());
-
-			response = generateSuccessResponse(CommonConstants.CREATE_STUDENT_API_RESPONSE, newStudent);
+			student = setStudent(request);
+			response = generateSuccessResponse(CommonConstants.CREATE_STUDENT_API_RESPONSE, student);
 		} else if (!msgList.isEmpty() && !containsErrors(msgList)) {
-			newStudent.setAddress(request.getAddress());
-			newStudent.setEmail(request.getEmail());
-			newStudent.setName(request.getName());
-			newStudent.setPhoneNumber(request.getPhoneNumber());
-			newStudent.setStudentType(request.getStudentType());
-
-			response = generateSuccessWithWarningResponse(CommonConstants.CREATE_STUDENT_API_RESPONSE, newStudent,
+			student = setStudent(request);
+			response = generateSuccessWithWarningResponse(CommonConstants.CREATE_STUDENT_API_RESPONSE, student,
 					msgList);
 		} else {
 			return generateErrorResponse(CommonConstants.CREATE_STUDENT_API_RESPONSE, msgList);
 		}
 
-		newStudent = studentService.save(newStudent);
+		student = studentService.save(student);
 
 		return response;
 
@@ -86,20 +76,10 @@ public class StudentEvents extends AbstractApiEvents {
 		if (student != null) {
 			msgList = validateRequest(request);
 			if (msgList.isEmpty() || msgList == null) {
-				student.setAddress(request.getAddress());
-				student.setName(request.getName());
-				student.setEmail(request.getEmail());
-				student.setPhoneNumber(request.getPhoneNumber());
-				student.setStudentType(request.getStudentType());
-
+				student = setStudent(request);
 				response = generateSuccessResponse(CommonConstants.UPDATE_STUDENT_API_RESPONSE, student);
 			} else if (!msgList.isEmpty() && !containsErrors(msgList)) {
-				student.setAddress(request.getAddress());
-				student.setName(request.getName());
-				student.setEmail(request.getEmail());
-				student.setPhoneNumber(request.getPhoneNumber());
-				student.setStudentType(request.getStudentType());
-
+				student = setStudent(request);
 				response = generateSuccessWithWarningResponse(CommonConstants.UPDATE_STUDENT_API_RESPONSE, student,
 						msgList);
 			} else {
@@ -110,7 +90,7 @@ public class StudentEvents extends AbstractApiEvents {
 			return response;
 
 		} else {
-			msgList.add(new Message().constructFromEnum(CommonConstants.ApiMessages.ID_NOT_FOUND));
+			msgList.add(Message.constructFromEnum(CommonConstants.ApiMessages.ID_NOT_FOUND));
 			return generateErrorResponse(CommonConstants.UPDATE_STUDENT_API_RESPONSE, msgList);
 		}
 	}
@@ -123,7 +103,7 @@ public class StudentEvents extends AbstractApiEvents {
 			studentService.deleteById(id);
 			response = generateSuccessResponse(CommonConstants.DELETE_STUDENT_API_RESPONSE, null);
 		} catch (EmptyResultDataAccessException | IllegalArgumentException e) {
-			msgList.add(new Message().constructFromEnum(CommonConstants.ApiMessages.ID_NOT_FOUND));
+			msgList.add(Message.constructFromEnum(CommonConstants.ApiMessages.ID_NOT_FOUND));
 			response = generateErrorResponse(CommonConstants.DELETE_STUDENT_API_RESPONSE, msgList);
 		}
 
@@ -131,9 +111,7 @@ public class StudentEvents extends AbstractApiEvents {
 	}
 
 	public List<Message> validateRequest(StudentApiRequest request) {
-
 		List<Message> msgList = validator.validate(request);
-
 		return msgList;
 	}
 
@@ -176,6 +154,16 @@ public class StudentEvents extends AbstractApiEvents {
 		response.setMessageList(messageList);
 
 		return response;
+	}
+	
+	public static Student setStudent(StudentApiRequest request) {
+		Student student = new Student();
+		student.setAddress(request.getAddress());
+		student.setEmail(request.getEmail());
+		student.setName(request.getName());
+		student.setPhoneNumber(request.getPhoneNumber());
+		student.setStudentType(request.getStudentType());
+		return student;
 	}
 
 }

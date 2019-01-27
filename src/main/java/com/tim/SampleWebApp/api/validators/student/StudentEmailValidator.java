@@ -16,19 +16,18 @@ public class StudentEmailValidator implements Validator<Object, Message> {
 
 	@Override
 	public Message validate(Object toValidate) {
-		Message m = new Message();
 		String str = (String) toValidate;
 
 		if (StringUtils.isBlank(str)) {
-			return m.constructFromEnumForField(ApiMessages.NULL_FIELD_VALUE, fieldName);
+			return Message.isRequired(fieldName);
 		} else if (Pattern.compile(emailPattern).matcher(str).find()) {
 			if (str.length() > fieldLength) {
-				m = m.constructFromEnumForField(ApiMessages.FIELD_LENGTH_TOO_LONG, fieldName);
+				return Message.fieldValueTooLong(fieldName, fieldLength);
 			}
 		} else {
-			m = m.constructFromEnumForField(ApiMessages.INVALID_VALUE, fieldName);
+			return Message.invalidValue(fieldName);
 		}
 
-		return m;
+		return null;
 	}
 }

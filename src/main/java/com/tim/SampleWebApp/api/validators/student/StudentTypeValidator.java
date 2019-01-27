@@ -13,15 +13,14 @@ public class StudentTypeValidator implements Validator<Object, Message> {
 
 	@Override
 	public Message validate(Object obj) {
-		Message m = new Message();
 		String toValidate = (String) obj;
 
 		if (StringUtils.isBlank(toValidate)) {
-			return m.constructFromEnumForField(ApiMessages.NULL_FIELD_VALUE, fieldName);
+			return Message.isRequired(fieldName);
 		} else if (!CommonConstants.StudentType.contains(toValidate)) {
-			m = m.constructFromEnumForField(ApiMessages.INVALID_VALUE, fieldName);
+			return Message.invalidValue(fieldName);
 		}
-		return m;
+		return null;
 	}
 
 }
