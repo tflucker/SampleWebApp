@@ -46,7 +46,7 @@ public class CourseEvents extends AbstractApiEvents {
 		} else {
 			logger.info("Bad Request!");
 			List<Message> msgList = new ArrayList<>();
-			msgList.add(new Message().constructFromEnum(ApiMessages.ID_NOT_FOUND));
+			msgList.add(Message.constructFromEnum(ApiMessages.ID_NOT_FOUND));
 			response = generateErrorResponse(CommonConstants.FIND_COURSE_API_RESPONSE, msgList);
 		}
 		return response;
@@ -58,20 +58,10 @@ public class CourseEvents extends AbstractApiEvents {
 
 		List<Message> msgList = validate(request);
 		if (msgList.isEmpty() || msgList == null) {
-			course.setCourseName(request.getCourseName());
-			course.setCourseDescription(request.getCourseDescription());
-			course.setCourseType(CommonConstants.CourseType.valueOf(request.getCourseType()).toString());
-			course.setMinSize(request.getMinSize());
-			course.setMaxSize(request.getMaxSize());
-			course.setTeacherName(request.getTeacherName());
+			course = setCourse(request);
 			response = generateSuccessResponse(CommonConstants.CREATE_COURSE_API_RESPONSE, course);
 		} else if (!msgList.isEmpty() && !containsErrors(msgList)) {
-			course.setCourseName(request.getCourseName());
-			course.setCourseDescription(request.getCourseDescription());
-			course.setCourseType(CommonConstants.CourseType.valueOf(request.getCourseType()).toString());
-			course.setMinSize(request.getMinSize());
-			course.setMaxSize(request.getMaxSize());
-			course.setTeacherName(request.getTeacherName());
+			course = setCourse(request);
 			response = generateSuccessWithWarningResponse(CommonConstants.CREATE_COURSE_API_RESPONSE, course, msgList);
 		} else {
 			return generateErrorResponse(CommonConstants.CREATE_COURSE_API_RESPONSE, msgList);
@@ -89,29 +79,19 @@ public class CourseEvents extends AbstractApiEvents {
 		if (course != null) {
 			msgList = validate(request);
 			if (msgList.isEmpty() || msgList == null) {
-				course.setCourseName(request.getCourseName());
-				course.setCourseDescription(request.getCourseDescription());
-				course.setCourseType(CommonConstants.CourseType.valueOf(request.getCourseType()).toString());
-				course.setMinSize(request.getMinSize());
-				course.setMaxSize(request.getMaxSize());
-				course.setTeacherName(request.getTeacherName());
-				response = generateSuccessResponse(CommonConstants.CREATE_COURSE_API_RESPONSE, course);
+				course = setCourse(request);
+				response = generateSuccessResponse(CommonConstants.UPDATE_COURSE_API_RESPONSE, course);
 			} else if (!msgList.isEmpty() && !containsErrors(msgList)) {
-				course.setCourseName(request.getCourseName());
-				course.setCourseDescription(request.getCourseDescription());
-				course.setCourseType(CommonConstants.CourseType.valueOf(request.getCourseType()).toString());
-				course.setMinSize(request.getMinSize());
-				course.setMaxSize(request.getMaxSize());
-				course.setTeacherName(request.getTeacherName());
-				response = generateSuccessWithWarningResponse(CommonConstants.CREATE_COURSE_API_RESPONSE, course,
+				course = setCourse(request);
+				response = generateSuccessWithWarningResponse(CommonConstants.UPDATE_COURSE_API_RESPONSE, course,
 						msgList);
 			} else {
-				return generateErrorResponse(CommonConstants.CREATE_COURSE_API_RESPONSE, msgList);
+				return generateErrorResponse(CommonConstants.UPDATE_COURSE_API_RESPONSE, msgList);
 			}
 			courseService.save(course);
 			return response;
 		} else {
-			msgList.add(new Message().constructFromEnum(ApiMessages.ID_NOT_FOUND));
+			msgList.add(Message.constructFromEnum(ApiMessages.ID_NOT_FOUND));
 			return generateErrorResponse(CommonConstants.UPDATE_COURSE_API_RESPONSE, msgList);
 		}
 	}
@@ -120,9 +100,10 @@ public class CourseEvents extends AbstractApiEvents {
 		CourseResponseObject response = new CourseResponseObject();
 		try {
 			courseService.deleteById(id);
+			response = generateSuccessResponse(CommonConstants.DELETE_COURSE_API_RESPONSE, null);
 		} catch (IllegalArgumentException | EmptyResultDataAccessException e) {
 			List<Message> msgList = new ArrayList<>();
-			msgList.add(new Message().constructFromEnum(ApiMessages.ID_NOT_FOUND));
+			msgList.add(Message.constructFromEnum(ApiMessages.ID_NOT_FOUND));
 			response = generateErrorResponse(CommonConstants.DELETE_COURSE_API_RESPONSE, msgList);
 		}
 
@@ -176,5 +157,17 @@ public class CourseEvents extends AbstractApiEvents {
 		response.setMessageList(messageList);
 
 		return response;
+	}
+
+	public static Course setCourse(CourseApiRequest request) {
+		Course course = new Course();
+		course.setCourseName(request.getCourseName());
+		course.setCourseDescription(request.getCourseDescription());
+		course.setCourseType(CommonConstants.CourseType.valueOf(request.getCourseType()).toString());
+		course.setMinSize(request.getMinSize());
+		course.setMaxSize(request.getMaxSize());
+		course.setTeacherName(request.getTeacherName());
+
+		return course;
 	}
 }

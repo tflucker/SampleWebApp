@@ -5,9 +5,15 @@ import com.tim.SampleWebApp.error.Message;
 
 public class CourseMaxSizeValidator implements Validator<Object, Message> {
 
+	public static final String fieldName = "maxSize";
+
 	@Override
 	public Message validate(Object toValidate) {
-		// TODO Auto-generated method stub
+		int val = (Integer) toValidate;
+		if (val == 0) {
+			return Message.isRequired(fieldName);
+		}
+
 		return null;
 	}
 }

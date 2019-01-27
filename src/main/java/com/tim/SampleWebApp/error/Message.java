@@ -3,7 +3,6 @@ package com.tim.SampleWebApp.error;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.tim.SampleWebApp.common.CommonConstants;
 import com.tim.SampleWebApp.common.CommonConstants.ApiMessages;
 
 @JsonInclude(Include.NON_EMPTY)
@@ -22,7 +21,7 @@ public class Message {
 
 	}
 
-	public Message constructFromEnum(ApiMessages apiMessages) {
+	public static Message constructFromEnum(ApiMessages apiMessages) {
 		Message msg = new Message();
 		msg.setCode(apiMessages.getCode());
 		msg.setType(apiMessages.getType());
@@ -31,19 +30,36 @@ public class Message {
 		return msg;
 	}
 
-	public Message constructFromEnumForField(ApiMessages apiMessage, String fieldName) {
+	public static Message constructFromEnumForField(ApiMessages apiMessage, String fieldName) {
 		Message msg = new Message();
 		msg.setCode(apiMessage.getCode());
 		msg.setType(apiMessage.getType());
-		if (apiMessage.equals(CommonConstants.ApiMessages.FIELD_LENGTH_TOO_LONG)) {
-			msg.setDescription(apiMessage.getDescription() + fieldName + ", truncated to database length");
-		} else {
-			msg.setDescription(apiMessage.getDescription() + fieldName);
-		}
-
+		msg.setDescription(apiMessage.getDescription() + fieldName);
 		return msg;
 	}
 
+	public static Message alphanumericOnly(String fieldName) {
+		return constructFromEnumForField(ApiMessages.ALPHANUMERIC_ONLY, fieldName);
+	}
+
+	public static Message numericOnly(String fieldName) {
+		return constructFromEnumForField(ApiMessages.NUMERIC_ONLY, fieldName);
+	}
+
+	public static Message isRequired(String fieldName) {
+		return constructFromEnumForField(ApiMessages.NULL_FIELD_VALUE, fieldName);
+	}
+
+	public static Message fieldValueTooLong(String fieldName, int fieldLength) {
+		Message msg = constructFromEnumForField(ApiMessages.FIELD_LENGTH_TOO_LONG, fieldName);
+		msg.setDescription(
+				ApiMessages.FIELD_LENGTH_TOO_LONG.getDescription() + fieldName + ", truncated to database length");
+		return msg;
+	}
+
+	public static Message invalidValue(String fieldName) {
+		return constructFromEnumForField(ApiMessages.INVALID_VALUE, fieldName);
+	}
 	public String getType() {
 		return type;
 	}
