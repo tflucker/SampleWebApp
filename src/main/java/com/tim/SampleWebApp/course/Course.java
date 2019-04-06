@@ -1,12 +1,21 @@
 package com.tim.SampleWebApp.course;
 
+import java.util.List;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+
+import com.tim.SampleWebApp.student.Student;
+import com.tim.SampleWebApp.student.courses.StudentCourses;
 
 @Entity
 @Table(name = "COURSE")
@@ -34,6 +43,9 @@ public class Course {
 
 	@Column
 	private String courseType;
+
+	@OneToMany(mappedBy="course")	
+	private List<StudentCourses> studentCourseAssociations;
 
 	public Course() {
 		super();
@@ -105,6 +117,14 @@ public class Course {
 
 	public void setCourseType(String courseType) {
 		this.courseType = courseType;
+	}
+
+	public List<StudentCourses> getStudentCourseAssociations() {
+		return studentCourseAssociations;
+	}
+
+	public void setStudentCourseAssociations(List<StudentCourses> studentCourseAssociations) {
+		this.studentCourseAssociations = studentCourseAssociations;
 	}
 
 }

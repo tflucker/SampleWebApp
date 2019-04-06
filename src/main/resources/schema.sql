@@ -28,9 +28,9 @@ CREATE TABLE course(
 );
 
 CREATE TABLE student_courses(
-	id NUMERIC IDENTITY PRIMARY KEY,
-	student_id NUMERIC NOT NULL,
-	course_id NUMERIC NOT NULL,
+	student_id NUMERIC,
+	course_id NUMERIC,
 	course_status VARCHAR(20),
-	completion_status VARCHAR(20)
+	completion_status VARCHAR(20),
+	PRIMARY KEY (student_id, course_id)
 );

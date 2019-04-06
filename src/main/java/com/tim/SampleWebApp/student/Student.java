@@ -1,20 +1,26 @@
 package com.tim.SampleWebApp.student;
 
+import java.util.List;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
+import com.tim.SampleWebApp.course.Course;
+import com.tim.SampleWebApp.student.courses.StudentCourses;
+
 @Entity
-@Table(name="STUDENT")
-@SequenceGenerator(sequenceName="student_seq", name="student_seq", allocationSize=1)
+@Table(name = "STUDENT")
+@SequenceGenerator(sequenceName = "student_seq", name = "student_seq", allocationSize = 1)
 public class Student {
 
 	@Id
-	@GeneratedValue(strategy=GenerationType.TABLE, generator="student_seq")
+	@GeneratedValue(strategy = GenerationType.TABLE, generator = "student_seq")
 	private long id;
 
 	@Column
@@ -32,6 +38,9 @@ public class Student {
 	@Column
 	private String studentType;
 
+	@OneToMany(mappedBy="student")
+	private List<StudentCourses> studentCourseAssociations;
+
 	public Student() {
 		super();
 	}
@@ -45,7 +54,7 @@ public class Student {
 		this.phoneNumber = phoneNumber;
 		this.studentType = studentType;
 	}
-	
+
 	public Student(String name, String address, String email, String phoneNumber, String studentType) {
 		super();
 		this.name = name;
@@ -103,12 +112,18 @@ public class Student {
 		this.studentType = studentType;
 	}
 
+	public List<StudentCourses> getStudentCourseAssociations() {
+		return studentCourseAssociations;
+	}
+
+	public void setStudentCourseAssociations(List<StudentCourses> studentCourseAssociations) {
+		this.studentCourseAssociations = studentCourseAssociations;
+	}
+
 	@Override
 	public String toString() {
 		return "Student [id=" + id + ", name=" + name + ", address=" + address + ", email=" + email + ", phoneNumber="
 				+ phoneNumber + ", studentType=" + studentType + "]";
 	}
-	
-	
 
 }
