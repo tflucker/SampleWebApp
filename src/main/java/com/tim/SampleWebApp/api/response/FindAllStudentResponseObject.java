@@ -22,7 +22,7 @@ public class FindAllStudentResponseObject {
 	@JsonProperty
 	private List<Student> studentInfo;
 
-	public FindAllStudentResponseObject constructFromStudent(String apiResponse, String responseCode,
+	public static FindAllStudentResponseObject constructFromStudent(String apiResponse, String responseCode,
 			String responseMessage, List<Student> studentList) {
 		FindAllStudentResponseObject response = new FindAllStudentResponseObject();
 		response.setApiResponse(apiResponse);

@@ -31,7 +31,7 @@ public class StudentEvents extends AbstractApiEvents {
 	public FindAllStudentResponseObject findAllStudents() {
 		List<Student> studentList = studentService.findAll();
 		logger.info("Request Success!");
-		return new FindAllStudentResponseObject().constructFromStudent(CommonConstants.FIND_ALL_STUDENT_API_RESPONSE,
+		return FindAllStudentResponseObject.constructFromStudent(CommonConstants.FIND_ALL_STUDENT_API_RESPONSE,
 				HttpStatus.OK.toString(), CommonConstants.RESPONSE_MESSAGE_SUCCESS, studentList);
 	}
 
